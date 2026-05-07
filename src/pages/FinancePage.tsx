@@ -1,5 +1,20 @@
 import { useMemo, useState } from 'react'
-import { ArrowLeft, CircleHelp, MapPin, Signal, Wifi } from 'lucide-react'
+import {
+  ArrowLeft,
+  ArrowRightLeft,
+  CircleHelp,
+  Coins,
+  CreditCard,
+  Gift,
+  MapPin,
+  Percent,
+  PiggyBank,
+  RotateCcw,
+  Signal,
+  Sparkles,
+  Wifi,
+  X,
+} from 'lucide-react'
 import { illustrationAssets } from '@/assets/illustrations'
 import { typographRu } from '@/lib/typography'
 
@@ -8,6 +23,7 @@ const imgRuble = 'https://www.figma.com/api/mcp/asset/f8004ce5-2cae-4ef6-b631-e9
 
 type TabKey = 'save' | 'borrow' | 'protect' | 'economy' | 'all'
 type TileKind = 'content' | 'product'
+type ProductTileId = 'deposits' | 'account' | 'bonus' | 'wallet'
 
 type Tile = {
   id: string
@@ -87,6 +103,26 @@ type DetailContent = {
   title: string
   action: string
   sections: DetailSection[]
+}
+
+type BenefitTone = 'coral' | 'green' | 'violet' | 'blue'
+type BenefitIcon = 'percent' | 'cross' | 'refund' | 'transfer' | 'coins' | 'card' | 'gift' | 'sparkles' | 'piggy'
+
+type OnboardingBenefit = {
+  title: string
+  description: string
+  tone: BenefitTone
+  icon: BenefitIcon
+}
+
+type ProductOnboardingContent = {
+  title: string
+  subtitle: string
+  footer: string
+  footerLinks?: [string, string]
+  action: string
+  illustration: ProductTileId
+  benefits: OnboardingBenefit[]
 }
 
 const details: Record<string, DetailContent> = {
@@ -237,6 +273,142 @@ const details: Record<string, DetailContent> = {
   },
 }
 
+const productOnboarding: Record<ProductTileId, ProductOnboardingContent> = {
+  wallet: {
+    title: 'Получайте скидки при оплате кошельком',
+    subtitle: 'Чтобы начать, понадобится меньше минуты',
+    footer: 'Партнёр откроет электронное средство платежа на номер +7 977 777-30-30.',
+    footerLinks: ['Условия', 'оферта партнёра'],
+    action: 'Хочу попробовать',
+    illustration: 'wallet',
+    benefits: [
+      {
+        title: 'Экономия на Авито Доставке',
+        description: 'С кошельком бывают скидки',
+        tone: 'coral',
+        icon: 'percent',
+      },
+      {
+        title: 'Мы не берём комиссий',
+        description: 'Ни за пополнение, ни за вывод денег',
+        tone: 'green',
+        icon: 'cross',
+      },
+      {
+        title: 'Мгновенный возврат в кошелёк',
+        description: 'Ни дня ожидания, если заказ отменится',
+        tone: 'violet',
+        icon: 'refund',
+      },
+      {
+        title: 'Можно вывести деньги через СБП',
+        description: 'На ваш счёт в любом банке',
+        tone: 'blue',
+        icon: 'transfer',
+      },
+    ],
+  },
+  deposits: {
+    title: 'Сравните вклады и выбирайте лучший',
+    subtitle: 'Подходящие предложения можно найти за пару минут',
+    footer: 'Сервис помогает сравнивать банковские условия, ставки и сроки. Итоговые условия зависят от выбранного банка.',
+    action: 'Подобрать вклад',
+    illustration: 'deposits',
+    benefits: [
+      {
+        title: 'Доходность наглядно',
+        description: 'Сразу видно ставку и срок',
+        tone: 'coral',
+        icon: 'coins',
+      },
+      {
+        title: 'Условия без скрытых шагов',
+        description: 'Пополнение, снятие и лимиты в одном месте',
+        tone: 'green',
+        icon: 'card',
+      },
+      {
+        title: 'Выбор под цель',
+        description: 'Копите на отпуск, подушку или крупную покупку',
+        tone: 'violet',
+        icon: 'sparkles',
+      },
+      {
+        title: 'Быстрый старт',
+        description: 'Переходите к заявке в банк в пару кликов',
+        tone: 'blue',
+        icon: 'transfer',
+      },
+    ],
+  },
+  account: {
+    title: 'Накопительный счёт с гибкими условиями',
+    subtitle: 'Храните деньги с процентами и свободным доступом',
+    footer: 'Условия начисления процентов и доступность продукта зависят от банка-партнёра и выбранного тарифа.',
+    action: 'Открыть счёт',
+    illustration: 'account',
+    benefits: [
+      {
+        title: 'Пополнение в любое время',
+        description: 'Добавляйте деньги без сложных ограничений',
+        tone: 'coral',
+        icon: 'coins',
+      },
+      {
+        title: 'Проценты на остаток',
+        description: 'Доход начисляется на сумму на счёте',
+        tone: 'green',
+        icon: 'sparkles',
+      },
+      {
+        title: 'Удобно для ежедневного резерва',
+        description: 'Деньги доступны, когда они нужны',
+        tone: 'violet',
+        icon: 'piggy',
+      },
+      {
+        title: 'Оформление онлайн',
+        description: 'Без длинной бумажной анкеты',
+        tone: 'blue',
+        icon: 'card',
+      },
+    ],
+  },
+  bonus: {
+    title: 'Бонусы помогают экономить на сервисе',
+    subtitle: 'Собирайте бонусы и используйте их с выгодой',
+    footer: 'Правила начисления и списания бонусов зависят от сценария использования и активных акций.',
+    action: 'Посмотреть бонусы',
+    illustration: 'bonus',
+    benefits: [
+      {
+        title: '1 бонус = 1 ₽',
+        description: 'Часть стоимости можно компенсировать бонусами',
+        tone: 'coral',
+        icon: 'gift',
+      },
+      {
+        title: 'Бонусы копятся постепенно',
+        description: 'За действия в сервисе и спецпредложения',
+        tone: 'green',
+        icon: 'coins',
+      },
+      {
+        title: 'Выгода в привычных сценариях',
+        description: 'Оплата и продвижение с дополнительной экономией',
+        tone: 'violet',
+        icon: 'sparkles',
+      },
+      {
+        title: 'Прозрачный баланс',
+        description: 'Видно, сколько начислено и доступно к списанию',
+        tone: 'blue',
+        icon: 'card',
+      },
+    ],
+  },
+}
+
 const t = typographRu
 
 function StatusBar() {
@@ -318,11 +490,14 @@ function TileImage({ image }: { image?: Tile['image'] }) {
   return null
 }
 
-function ProductTile({ tile, onOpen }: { tile: Tile; onOpen: (id: string) => void }) {
+function ProductTile({ tile, onOpen }: { tile: Tile; onOpen: (id: ProductTileId) => void }) {
+  const productId = tile.id as ProductTileId
   return (
     <button
       type="button"
-      onClick={() => onOpen(tile.id)}
+      onClick={() => {
+        if (productId in productOnboarding) onOpen(productId)
+      }}
       className="flex h-[326px] w-full flex-col overflow-hidden rounded-[20px] bg-[#f2f1f0] text-left transition-transform active:scale-[0.985]"
     >
       <div className="flex h-[152px] flex-col gap-3 px-4 pt-4 text-black">
@@ -349,8 +524,142 @@ function ContentTile({ tile, onOpen }: { tile: Tile; onOpen: (id: string) => voi
   )
 }
 
-function TileCard({ tile, onOpen }: { tile: Tile; onOpen: (id: string) => void }) {
-  return tile.kind === 'product' ? <ProductTile tile={tile} onOpen={onOpen} /> : <ContentTile tile={tile} onOpen={onOpen} />
+function TileCard({
+  tile,
+  onOpenProduct,
+  onOpenContent,
+}: {
+  tile: Tile
+  onOpenProduct: (id: ProductTileId) => void
+  onOpenContent: (id: string) => void
+}) {
+  return tile.kind === 'product' ? <ProductTile tile={tile} onOpen={onOpenProduct} /> : <ContentTile tile={tile} onOpen={onOpenContent} />
+}
+
+function BenefitIconBadge({ tone, icon }: { tone: BenefitTone; icon: BenefitIcon }) {
+  const toneClass: Record<BenefitTone, string> = {
+    coral: 'bg-[linear-gradient(140deg,#f9b6bd_0%,#ff595d_90%)] text-[#61121d]',
+    green: 'bg-[linear-gradient(140deg,#b6eec8_0%,#2fdd66_90%)] text-[#08571e]',
+    violet: 'bg-[linear-gradient(140deg,#ddcdf5_0%,#b66ef0_90%)] text-[#472266]',
+    blue: 'bg-[linear-gradient(140deg,#b8e2f2_0%,#32aae5_90%)] text-[#114b72]',
+  }
+
+  const iconNode =
+    icon === 'percent' ? (
+      <Percent className="h-[22px] w-[22px]" strokeWidth={2.5} />
+    ) : icon === 'cross' ? (
+      <X className="h-[22px] w-[22px]" strokeWidth={2.5} />
+    ) : icon === 'refund' ? (
+      <RotateCcw className="h-[22px] w-[22px]" strokeWidth={2.4} />
+    ) : icon === 'transfer' ? (
+      <ArrowRightLeft className="h-[22px] w-[22px]" strokeWidth={2.4} />
+    ) : icon === 'coins' ? (
+      <Coins className="h-[22px] w-[22px]" strokeWidth={2.4} />
+    ) : icon === 'card' ? (
+      <CreditCard className="h-[22px] w-[22px]" strokeWidth={2.4} />
+    ) : icon === 'gift' ? (
+      <Gift className="h-[22px] w-[22px]" strokeWidth={2.4} />
+    ) : icon === 'piggy' ? (
+      <PiggyBank className="h-[22px] w-[22px]" strokeWidth={2.4} />
+    ) : (
+      <Sparkles className="h-[22px] w-[22px]" strokeWidth={2.4} />
+    )
+
+  return <div className={`flex h-[60px] w-[60px] items-center justify-center rounded-[18px] ${toneClass[tone]}`}>{iconNode}</div>
+}
+
+function ProductOnboardingHero({ illustration }: { illustration: ProductTileId }) {
+  const hero = illustration === 'wallet' ? illustrationAssets.onboarding.wallet : illustrationAssets.tiles[illustration]
+  return (
+    <div className="relative mt-2 h-[174px] w-full overflow-hidden">
+      {hero ? <img alt="" className="h-full w-full object-contain object-center" src={hero} /> : null}
+    </div>
+  )
+}
+
+function ProductOnboarding({
+  tileId,
+  onClose,
+}: {
+  tileId: ProductTileId | null
+  onClose: () => void
+}) {
+  if (!tileId) return null
+  const onboarding = productOnboarding[tileId]
+
+  return (
+    <div className="fixed inset-0 z-[60] animate-sheet-overlay">
+      <div className="relative mx-auto h-[min(812px,100dvh)] w-full max-w-[375px]">
+        <button
+          type="button"
+          aria-label="Закрыть шторку"
+          className="absolute inset-0 bg-[rgba(0,0,0,0.4)]"
+          onClick={onClose}
+        />
+        <div
+          className="absolute bottom-0 left-1/2 flex w-full max-w-[375px] max-h-[calc(100%-60px)] -translate-x-1/2 flex-col overflow-hidden rounded-tl-[28px] rounded-tr-[28px] bg-[#ececec] animate-sheet-up"
+          onClick={(event) => event.stopPropagation()}
+        >
+          <div className="pt-2">
+            <div className="mx-auto h-1 w-[39px] rounded-[3px] bg-[#dcdcdc]" />
+          </div>
+
+          <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-5">
+            <ProductOnboardingHero illustration={onboarding.illustration} />
+
+            <div className="px-2 text-center">
+              <h2 className="text-[24px] font-extrabold leading-[30px] text-black">{t(onboarding.title)}</h2>
+              <p className="mt-3 text-[15px] font-medium leading-[22px]">{t(onboarding.subtitle)}</p>
+            </div>
+
+            <div className="mt-7 flex flex-col gap-5">
+              {onboarding.benefits.map((benefit) => (
+                <div key={benefit.title} className="flex items-center gap-3">
+                  <BenefitIconBadge tone={benefit.tone} icon={benefit.icon} />
+                  <div className="flex-1">
+                    <p className="text-[15px] font-medium leading-5 text-black">{t(benefit.title)}</p>
+                    <p className="mt-1 text-[13px] font-medium leading-4 text-[#767676]">{t(benefit.description)}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <p className="mt-7 pb-8 text-[13px] font-medium leading-[18px] text-[#7d7d7d]">
+              {t(onboarding.footer)}{' '}
+              {onboarding.footerLinks ? (
+                <>
+                  <a
+                    href="#"
+                    className="underline [text-decoration-skip-ink:none] [text-underline-position:from-font]"
+                    onClick={(event) => event.preventDefault()}
+                  >
+                    {t(onboarding.footerLinks[0])}
+                  </a>
+                  {', '}
+                  <a
+                    href="#"
+                    className="underline [text-decoration-skip-ink:none] [text-underline-position:from-font]"
+                    onClick={(event) => event.preventDefault()}
+                  >
+                    {t(onboarding.footerLinks[1])}
+                  </a>
+                  .
+                </>
+              ) : null}
+            </p>
+          </div>
+
+          <div className="relative shrink-0 px-4 pb-3 pt-4">
+            <div className="pointer-events-none absolute inset-x-0 -top-14 h-14 bg-[linear-gradient(180deg,rgba(236,236,236,0)_0%,#ececec_100%)]" />
+            <button type="button" className="h-[52px] w-full rounded-[16px] bg-[#0d0e12] text-[15px] font-medium text-white">
+              {t(onboarding.action)}
+            </button>
+            <div className="mx-auto mt-6 h-[5px] w-[135px] rounded-full bg-black" />
+          </div>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 function BottomSheet({
@@ -366,48 +675,52 @@ function BottomSheet({
   if (!detail) return null
 
   return (
-    <div className="fixed inset-0 z-50 bg-[rgba(0,0,0,0.4)] animate-sheet-overlay" onClick={onClose}>
-      <div
-        className="absolute bottom-0 left-1/2 flex w-full max-w-[375px] -translate-x-1/2 flex-col overflow-hidden rounded-tl-[28px] rounded-tr-[28px] bg-white animate-sheet-up"
-        onClick={(event) => event.stopPropagation()}
-      >
-        <div className="flex flex-col items-center bg-white py-2">
-          <div className="h-1 w-[39px] rounded-[3px] bg-[#ebeae8]" />
-        </div>
-        <div className="bg-white pl-4 pr-12">
-          <div className="w-10">
-            <div className="h-[6px]" />
+    <div className="fixed inset-0 z-50 animate-sheet-overlay">
+      <div className="relative mx-auto h-[min(812px,100dvh)] w-full max-w-[375px]">
+        <button
+          type="button"
+          aria-label="Закрыть шторку"
+          className="absolute inset-0 bg-[rgba(0,0,0,0.4)]"
+          onClick={onClose}
+        />
+        <div
+          className="absolute bottom-0 left-1/2 flex w-full max-w-[375px] max-h-[calc(100%-60px)] -translate-x-1/2 flex-col overflow-hidden rounded-tl-[28px] rounded-tr-[28px] bg-white animate-sheet-up"
+          onClick={(event) => event.stopPropagation()}
+        >
+          <div className="flex flex-col items-center bg-white py-2">
+            <div className="h-1 w-[39px] rounded-[3px] bg-[#ebeae8]" />
           </div>
-          <h3 className="text-[24px] font-extrabold leading-7 text-black">{t(detail.title)}</h3>
-          <div className="w-10">
-            <div className="h-[6px]" />
+          <div className="bg-white pl-4 pr-12">
+            <div className="w-10">
+              <div className="h-[6px]" />
+            </div>
+            <h3 className="text-[24px] font-extrabold leading-7 text-black">{t(detail.title)}</h3>
+            <div className="w-10">
+              <div className="h-[6px]" />
+            </div>
           </div>
-        </div>
-        <div className="flex flex-col bg-white px-4 pb-10 pt-[6px]">
-          <div className="w-full text-[15px] font-medium leading-[22px] text-black">
-            {detail.sections.map((section, index) =>
-              section.type === 'lead' ? (
-                <p key={index} className={index === detail.sections.length - 1 ? '' : 'mb-3'}>
-                  {t(section.text)}
-                </p>
-              ) : (
-                <p key={index} className={index === detail.sections.length - 1 ? '' : 'mb-3'}>
-                  <span className="font-medium">{'✦ '}</span>
-                  <span className="font-extrabold">{t(section.strong)}</span>
-                  <span>{t(section.text)}</span>
-                </p>
-              ),
-            )}
-          </div>
-          <button
-            type="button"
-            className="mt-6 h-12 rounded-[16px] bg-[#171717] px-4 text-[15px] font-medium text-white"
-            onClick={onClose}
-          >
-            {t(detail.action)}
-          </button>
-          <div className="flex justify-center pt-2">
-            <div className="h-[5px] w-[135px] rounded-full bg-black" />
+          <div className="min-h-0 overflow-y-auto bg-white px-4 pb-10 pt-[6px]">
+            <div className="w-full text-[15px] font-medium leading-[22px] text-black">
+              {detail.sections.map((section, index) =>
+                section.type === 'lead' ? (
+                  <p key={index} className={index === detail.sections.length - 1 ? '' : 'mb-3'}>
+                    {t(section.text)}
+                  </p>
+                ) : (
+                  <p key={index} className={index === detail.sections.length - 1 ? '' : 'mb-3'}>
+                    <span className="font-medium">{'✦ '}</span>
+                    <span className="font-extrabold">{t(section.strong)}</span>
+                    <span>{t(section.text)}</span>
+                  </p>
+                ),
+              )}
+            </div>
+            <button type="button" className="mt-6 h-12 w-full rounded-[16px] bg-[#171717] px-4 text-[15px] font-medium text-white" onClick={onClose}>
+              {t(detail.action)}
+            </button>
+            <div className="flex justify-center pt-2">
+              <div className="h-[5px] w-[135px] rounded-full bg-black" />
+            </div>
           </div>
         </div>
       </div>
@@ -417,7 +730,8 @@ function BottomSheet({
 
 export function FinancePage() {
   const [activeTab, setActiveTab] = useState<TabKey>('save')
-  const [openedTile, setOpenedTile] = useState<string | null>(null)
+  const [openedContentTile, setOpenedContentTile] = useState<string | null>(null)
+  const [openedProductTile, setOpenedProductTile] = useState<ProductTileId | null>(null)
 
   const filteredLeft = useMemo(
     () => tilesLeft.filter((tile) => activeTab === 'all' || tile.category.includes(activeTab)),
@@ -430,101 +744,104 @@ export function FinancePage() {
 
   return (
     <>
-      <main className="min-h-screen bg-white text-black">
-        <div className="mx-auto min-h-screen w-full max-w-[375px] bg-white pb-10">
+      <main className="min-h-screen bg-[#d9d9d9] text-black">
+        <div className="mx-auto h-[min(812px,100dvh)] w-full max-w-[375px] overflow-hidden bg-white">
           <StatusBar />
 
-          <div className="h-[52px] px-[6px]">
-            <div className="relative flex h-full items-center justify-between">
-              <button type="button" className="flex h-10 w-10 items-center justify-center text-black">
-                <ArrowLeft className="h-6 w-6" strokeWidth={2.2} />
-              </button>
-              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pb-[2px] text-center text-[16px] font-extrabold leading-5 text-black">
-                {t('Финансы')}
-              </div>
-              <button type="button" className="ml-auto flex h-10 w-10 items-center justify-center text-black">
-                <CircleHelp className="h-6 w-6 fill-black text-white" strokeWidth={2.2} />
-              </button>
-            </div>
-          </div>
-
-          <section className="flex flex-col gap-10 pt-[10px]">
-            <div className="px-4">
-              <div className="flex flex-col gap-[11px]">
-                <h1 className="text-[32px] font-extrabold leading-9 text-black">{t('Тут всё про деньги')}</h1>
-                <p className="max-w-[312px] text-[15px] font-medium leading-5 text-black">{t('На Авито найдётся решение любой финансовой задачи')}</p>
-              </div>
-            </div>
-
-            <div className="overflow-x-auto px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              <div className="flex w-max gap-[6px]">
-                {tabs.map((tab) => {
-                  const isActive = tab.key === activeTab
-                  return (
-                    <button
-                      key={tab.key}
-                      type="button"
-                      onClick={() => setActiveTab(tab.key)}
-                      className={`flex h-9 items-center justify-center rounded-[12px] px-[14px] pb-[11px] pt-[9px] text-[13px] font-medium leading-4 shadow-[0_1px_1.5px_rgba(0,0,0,0),0_4px_15px_rgba(0,0,0,0)] transition-colors ${
-                        isActive ? 'bg-[#141414] text-white' : 'bg-[#f2f1f0] text-black'
-                      }`}
-                    >
-                      {t(tab.label)}
-                    </button>
-                  )
-                })}
-              </div>
-            </div>
-          </section>
-
-          <div className="px-[10px] pb-[6px] pt-6">
-            <button
-              type="button"
-              onClick={() => setOpenedTile('promo')}
-              className="relative flex w-full overflow-hidden rounded-[20px] bg-[linear-gradient(90deg,#e2ffd6_10%,#f4eefe_90%)] text-left transition-transform active:scale-[0.99]"
-            >
-              <div className="flex w-[218px] flex-col gap-4 px-5 py-5">
-                <div className="flex flex-col gap-1">
-                  <h2 className="text-[18px] font-extrabold leading-[22px] text-black">{t('Вклады до 17% годовых')}</h2>
-                  <p className="text-[15px] font-medium leading-5 text-black">{t('Посмотрите, что предлагают крупные банки')}</p>
+          <div className="h-[calc(100%-44px)] overflow-y-auto pb-10">
+            <div className="sticky top-0 z-30 h-[52px] bg-white px-[6px]">
+              <div className="relative flex h-full items-center justify-between">
+                <button type="button" className="flex h-10 w-10 items-center justify-center text-black">
+                  <ArrowLeft className="h-6 w-6" strokeWidth={2.2} />
+                </button>
+                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pb-[2px] text-center text-[16px] font-extrabold leading-5 text-black">
+                  {t('Финансы')}
                 </div>
-                <div className="inline-flex h-11 w-fit items-center rounded-[12px] bg-[#141414] px-4 text-[15px] font-medium text-white">
-                  {t('Давайте')}
+                <button type="button" className="ml-auto flex h-10 w-10 items-center justify-center text-black">
+                  <CircleHelp className="h-6 w-6 fill-black text-white" strokeWidth={2.2} />
+                </button>
+              </div>
+            </div>
+
+            <section className="flex flex-col gap-10 pt-[10px]">
+              <div className="px-4">
+                <div className="flex flex-col gap-[11px]">
+                  <h1 className="text-[32px] font-extrabold leading-9 text-black">{t('Тут всё про деньги')}</h1>
+                  <p className="max-w-[312px] text-[15px] font-medium leading-5 text-black">{t('На Авито найдётся решение любой финансовой задачи')}</p>
                 </div>
               </div>
-              <PromoArtwork />
-            </button>
-          </div>
 
-          <section className="px-[10px]">
-            <div className="flex items-start gap-[6px]">
-              <div className="flex w-[174.5px] flex-col gap-[6px]">
-                {filteredLeft.map((tile) => (
-                  <TileCard key={tile.id} tile={tile} onOpen={setOpenedTile} />
-                ))}
+              <div className="overflow-x-auto px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                <div className="flex w-max gap-[6px]">
+                  {tabs.map((tab) => {
+                    const isActive = tab.key === activeTab
+                    return (
+                      <button
+                        key={tab.key}
+                        type="button"
+                        onClick={() => setActiveTab(tab.key)}
+                        className={`flex h-9 items-center justify-center rounded-[12px] px-[14px] pb-[11px] pt-[9px] text-[13px] font-medium leading-4 shadow-[0_1px_1.5px_rgba(0,0,0,0),0_4px_15px_rgba(0,0,0,0)] transition-colors ${
+                          isActive ? 'bg-[#141414] text-white' : 'bg-[#f2f1f0] text-black'
+                        }`}
+                      >
+                        {t(tab.label)}
+                      </button>
+                    )
+                  })}
+                </div>
               </div>
-              <div className="flex w-[174.5px] flex-col gap-[6px]">
-                {filteredRight.map((tile) => (
-                  <TileCard key={tile.id} tile={tile} onOpen={setOpenedTile} />
-                ))}
-              </div>
+            </section>
+
+            <div className="px-[10px] pb-[6px] pt-6">
+              <button
+                type="button"
+                onClick={() => setOpenedContentTile('promo')}
+                className="relative flex w-full overflow-hidden rounded-[20px] bg-[linear-gradient(90deg,#e2ffd6_10%,#f4eefe_90%)] text-left transition-transform active:scale-[0.99]"
+              >
+                <div className="flex w-[218px] flex-col gap-4 px-5 py-5">
+                  <div className="flex flex-col gap-1">
+                    <h2 className="text-[18px] font-extrabold leading-[22px] text-black">{t('Вклады до 17% годовых')}</h2>
+                    <p className="text-[15px] font-medium leading-5 text-black">{t('Посмотрите, что предлагают крупные банки')}</p>
+                  </div>
+                  <div className="inline-flex h-11 w-fit items-center rounded-[12px] bg-[#141414] px-4 text-[15px] font-medium text-white">
+                    {t('Давайте')}
+                  </div>
+                </div>
+                <PromoArtwork />
+              </button>
             </div>
-          </section>
 
-          <section className="flex flex-col items-center gap-5 px-[10px] pt-[60px]">
-            <p className="w-[343px] text-center text-[18px] font-extrabold leading-[22px] text-black">{t('Здесь нет того, что я хочу')} 👀</p>
-            <button
-              type="button"
-              onClick={() => setOpenedTile('promo')}
-              className="inline-flex h-11 items-center justify-center rounded-[12px] bg-[#f2f1f0] px-4 text-[15px] font-medium text-black"
-            >
-              {t('Расскажите нам')}
-            </button>
-          </section>
+            <section className="px-[10px]">
+              <div className="flex items-start gap-[6px]">
+                <div className="flex w-[174.5px] flex-col gap-[6px]">
+                  {filteredLeft.map((tile) => (
+                    <TileCard key={tile.id} tile={tile} onOpenProduct={setOpenedProductTile} onOpenContent={setOpenedContentTile} />
+                  ))}
+                </div>
+                <div className="flex w-[174.5px] flex-col gap-[6px]">
+                  {filteredRight.map((tile) => (
+                    <TileCard key={tile.id} tile={tile} onOpenProduct={setOpenedProductTile} onOpenContent={setOpenedContentTile} />
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            <section className="flex flex-col items-center gap-5 px-[10px] pt-[60px]">
+              <p className="w-[343px] text-center text-[18px] font-extrabold leading-[22px] text-black">{t('Здесь нет того, что я хочу')} 👀</p>
+              <button
+                type="button"
+                onClick={() => setOpenedContentTile('promo')}
+                className="inline-flex h-11 items-center justify-center rounded-[12px] bg-[#f2f1f0] px-4 text-[15px] font-medium text-black"
+              >
+                {t('Расскажите нам')}
+              </button>
+            </section>
+          </div>
         </div>
       </main>
 
-      <BottomSheet tileId={openedTile} onClose={() => setOpenedTile(null)} />
+      <BottomSheet tileId={openedContentTile} onClose={() => setOpenedContentTile(null)} />
+      <ProductOnboarding tileId={openedProductTile} onClose={() => setOpenedProductTile(null)} />
     </>
   )
 }
