@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import {
   ArrowLeft,
   ArrowRightLeft,
@@ -16,24 +16,12 @@ import {
   X,
 } from 'lucide-react'
 import { illustrationAssets } from '@/assets/illustrations'
+import { ProductGallery } from '@/components/gallery/ProductGallery'
+import type { GalleryBlockConfig, GalleryItem } from '@/components/gallery/types'
 import { typographRu } from '@/lib/typography'
 
-const imgBonus = 'https://www.figma.com/api/mcp/asset/0077f567-b5e4-4243-a484-6e4f91b7375d'
-const imgRuble = 'https://www.figma.com/api/mcp/asset/f8004ce5-2cae-4ef6-b631-e93e8c926a9a'
-
 type TabKey = 'save' | 'borrow' | 'protect' | 'economy' | 'all'
-type TileKind = 'content' | 'product'
 type ProductTileId = 'deposits' | 'account' | 'bonus' | 'wallet'
-
-type Tile = {
-  id: string
-  kind: TileKind
-  title: string
-  description?: string
-  tag?: string
-  image?: 'deposits' | 'account' | 'bonus' | 'wallet'
-  category: TabKey[]
-}
 
 const tabs: { key: TabKey; label: string }[] = [
   { key: 'save', label: 'Накопить' },
@@ -41,58 +29,6 @@ const tabs: { key: TabKey; label: string }[] = [
   { key: 'protect', label: 'Застраховать' },
   { key: 'economy', label: 'Сэкономить' },
   { key: 'all', label: 'Всё и сразу' },
-]
-
-const tilesLeft: Tile[] = [
-  {
-    id: 'gosuslugi',
-    kind: 'content',
-    title: 'Зачем Авито нужны Госуслуги',
-    tag: '#безопасность',
-    category: ['save', 'all'],
-  },
-  {
-    id: 'deposits',
-    kind: 'product',
-    title: 'Вклады до 17% годовых',
-    description: 'Посмотрите, что предлагают крупные банки',
-    image: 'deposits',
-    category: ['save', 'economy', 'all'],
-  },
-  {
-    id: 'bonus',
-    kind: 'product',
-    title: 'Бонусы',
-    description: 'Пользуйтесь Авито с выгодой: 1 бонус = 1 ₽',
-    image: 'bonus',
-    category: ['save', 'economy', 'all'],
-  },
-]
-
-const tilesRight: Tile[] = [
-  {
-    id: 'account',
-    kind: 'product',
-    title: 'Накопитель-\nный счёт',
-    description: 'Можно снимать и класть деньги в любой момент',
-    image: 'account',
-    category: ['save', 'all'],
-  },
-  {
-    id: 'credit',
-    kind: 'content',
-    title: 'Как улучшить кредитную историю',
-    tag: '#кредиты',
-    category: ['save', 'borrow', 'all'],
-  },
-  {
-    id: 'wallet',
-    kind: 'product',
-    title: 'Кошелёк',
-    description: 'Он даёт скидки, а сэкономил — считай заработал',
-    image: 'wallet',
-    category: ['save', 'economy', 'all'],
-  },
 ]
 
 type DetailSection =
@@ -241,6 +177,56 @@ const details: Record<string, DetailContent> = {
       },
     ],
   },
+  'osago-payout': {
+    title: 'Сколько можно получить по полису ОСАГО',
+    action: 'Прицениться к ОСАГО',
+    sections: [
+      {
+        type: 'lead',
+        text: 'Если у виновника аварии было ОСАГО, страховая компенсирует пострадавшему:',
+      },
+      {
+        type: 'bullet',
+        strong: 'до 500 000 ₽',
+        text: ' за вред жизни и здоровью;',
+      },
+      {
+        type: 'bullet',
+        strong: 'до 400 000 ₽',
+        text: ' за ущерб автомобилю и другому имуществу.',
+      },
+      {
+        type: 'lead',
+        text: 'Для этого нужно оформить ДТП через ГИБДД.',
+      },
+      {
+        type: 'lead',
+        text: 'При оформлении аварии по европротоколу страховые компенсируют только расходы на ремонт машины пострадавшего.',
+      },
+      {
+        type: 'lead',
+        text: 'Виновник ДТП выплаты по ОСАГО не получает.',
+      },
+    ],
+  },
+  'mortgage-life': {
+    title: 'Зачем страховать жизнь при ипотеке',
+    action: 'Мне такое надо',
+    sections: [
+      {
+        type: 'lead',
+        text: 'Есть как минимум две причины:',
+      },
+      {
+        type: 'lead',
+        text: '✦ Так дешевле. С такой страховкой банки часто снижают ставку на 0,5–1% — выгоднее оформить, чем переплачивать.',
+      },
+      {
+        type: 'lead',
+        text: '✦ В случае чего не придётся переживать за жильё. Если заёмщик получит инвалидность или погибнет, страховая разом погасит долг.',
+      },
+    ],
+  },
   wallet: {
     title: 'Кошелёк',
     action: 'Открыть кошелёк',
@@ -271,6 +257,132 @@ const details: Record<string, DetailContent> = {
       },
     ],
   },
+  'promo-osago': {
+    title: 'ОСАГО',
+    action: 'Ну-ка, что там',
+    sections: [
+      {
+        type: 'lead',
+        text: 'Сравнить цены в 17 страховых и выбрать самую выгодную.',
+      },
+    ],
+  },
+}
+
+const galleryItems: Record<string, GalleryItem> = {
+  promo: {
+    id: 'promo',
+    kind: 'product',
+    title: 'Вклады до 17% годовых',
+    description: 'Посмотрите, что предлагают крупные банки',
+    ctaLabel: 'Давайте',
+    imageSrc: illustrationAssets.banners.deposits,
+    clickTarget: 'content',
+    categories: ['save', 'borrow', 'protect', 'economy', 'all'],
+  },
+  'promo-osago': {
+    id: 'promo-osago',
+    kind: 'product',
+    title: 'ОСАГО',
+    description: 'Сравнить цены в 17 страховых и выбрать самую выгодную',
+    ctaLabel: 'Ну-ка, что там',
+    imageSrc: illustrationAssets.banners.osago,
+    lImagePreset: 'offerContentOsago',
+    clickTarget: 'content',
+    categories: ['protect', 'all'],
+  },
+  gosuslugi: {
+    id: 'gosuslugi',
+    kind: 'content',
+    title: 'Зачем Авито нужны Госуслуги',
+    tag: '#безопасность',
+    categories: ['save', 'protect', 'all'],
+  },
+  deposits: {
+    id: 'deposits',
+    kind: 'product',
+    title: 'Вклады до 17% годовых',
+    description: 'Посмотрите, что предлагают крупные банки',
+    imageSrc: illustrationAssets.tiles.deposits,
+    categories: ['save', 'economy', 'all'],
+  },
+  bonus: {
+    id: 'bonus',
+    kind: 'product',
+    title: 'Бонусы',
+    description: 'Пользуйтесь Авито с выгодой: 1 бонус = 1 ₽',
+    imageSrc: illustrationAssets.tiles.bonus,
+    categories: ['save', 'economy', 'all'],
+  },
+  account: {
+    id: 'account',
+    kind: 'product',
+    title: 'Накопитель-\nный счёт',
+    description: 'Можно снимать и класть деньги в любой момент',
+    imageSrc: illustrationAssets.tiles.account,
+    categories: ['save', 'protect', 'all'],
+  },
+  credit: {
+    id: 'credit',
+    kind: 'content',
+    title: 'Как улучшить кредитную историю',
+    tag: '#кредиты',
+    categories: ['save', 'borrow', 'protect', 'all'],
+  },
+  'osago-payout': {
+    id: 'osago-payout',
+    kind: 'content',
+    title: 'Сколько можно получить по полису ОСАГО',
+    tag: '#страховки',
+    categories: ['protect', 'all'],
+  },
+  'mortgage-life': {
+    id: 'mortgage-life',
+    kind: 'content',
+    title: 'Зачем страховать жизнь при ипотеке',
+    tag: '#страховки',
+    categories: ['protect', 'all'],
+  },
+  wallet: {
+    id: 'wallet',
+    kind: 'product',
+    title: 'Кошелёк',
+    description: 'Он даёт скидки, а сэкономил — считай заработал',
+    imageSrc: illustrationAssets.tiles.wallet,
+    categories: ['save', 'economy', 'all'],
+  },
+}
+
+const defaultGalleryBlocks: GalleryBlockConfig[] = [
+  {
+    id: 'promo-banner',
+    layout: 'L',
+    itemIds: ['promo'],
+  },
+  {
+    id: 'main-grid',
+    layout: 'S+M+M|M+S+M',
+    itemIds: ['gosuslugi', 'deposits', 'bonus', 'account', 'credit', 'wallet'],
+  },
+]
+
+const galleryBlocksByTab: Record<TabKey, GalleryBlockConfig[]> = {
+  save: defaultGalleryBlocks,
+  borrow: defaultGalleryBlocks,
+  protect: [
+    {
+      id: 'protect-promo-banner',
+      layout: 'L',
+      itemIds: ['promo-osago'],
+    },
+    {
+      id: 'protect-grid',
+      layout: 'S+S+M',
+      itemIds: ['osago-payout', 'mortgage-life', 'account'],
+    },
+  ],
+  economy: defaultGalleryBlocks,
+  all: defaultGalleryBlocks,
 }
 
 const productOnboarding: Record<ProductTileId, ProductOnboardingContent> = {
@@ -430,112 +542,6 @@ function StatusBar() {
   )
 }
 
-function PromoArtwork() {
-  return (
-    <div className="pointer-events-none absolute inset-y-0 right-0 w-[137px] overflow-hidden">
-      <img alt="" className="absolute left-0 top-0 h-[188px] w-[137px]" src={illustrationAssets.banners.deposits} />
-    </div>
-  )
-}
-
-function DepositArtwork() {
-  const depositsSvg = illustrationAssets.tiles.deposits
-  return (
-    <div className="pointer-events-none absolute bottom-0 left-0 h-[174px] w-[174px] overflow-hidden">
-      {depositsSvg ? <img alt="" className="absolute left-0 top-0 h-[174px] w-[174px]" src={depositsSvg} /> : null}
-    </div>
-  )
-}
-
-function AccountArtwork() {
-  const accountSvg = illustrationAssets.tiles.account
-  return (
-    <div className="pointer-events-none absolute bottom-0 left-0 h-[174px] w-[174px] overflow-hidden">
-      {accountSvg ? (
-        <img alt="" className="absolute left-0 top-0 h-[174px] w-[174px]" src={accountSvg} />
-      ) : (
-        <img alt="" className="absolute left-[-35px] top-[-14px] h-[257px] w-[257px] max-w-none" src={imgRuble} />
-      )}
-    </div>
-  )
-}
-
-function BonusArtwork() {
-  const bonusSvg = illustrationAssets.tiles.bonus
-  return (
-    <div className="pointer-events-none absolute bottom-0 left-0 h-[174px] w-[174px] overflow-hidden">
-      {bonusSvg ? (
-        <img alt="" className="absolute left-0 top-0 h-[174px] w-[174px]" src={bonusSvg} />
-      ) : (
-        <img alt="" className="absolute left-[-72px] top-[-111px] h-[403px] w-[403px] max-w-none" src={imgBonus} />
-      )}
-    </div>
-  )
-}
-
-function WalletArtwork() {
-  const walletSvg = illustrationAssets.tiles.wallet
-  return (
-    <div className="pointer-events-none absolute bottom-0 left-0 h-[174px] w-[174px] overflow-hidden">
-      {walletSvg ? <img alt="" className="absolute left-0 top-0 h-[174px] w-[174px]" src={walletSvg} /> : null}
-    </div>
-  )
-}
-
-function TileImage({ image }: { image?: Tile['image'] }) {
-  if (image === 'deposits') return <DepositArtwork />
-  if (image === 'account') return <AccountArtwork />
-  if (image === 'bonus') return <BonusArtwork />
-  if (image === 'wallet') return <WalletArtwork />
-  return null
-}
-
-function ProductTile({ tile, onOpen }: { tile: Tile; onOpen: (id: ProductTileId) => void }) {
-  const productId = tile.id as ProductTileId
-  return (
-    <button
-      type="button"
-      onClick={() => {
-        if (productId in productOnboarding) onOpen(productId)
-      }}
-      className="flex h-[326px] w-full flex-col overflow-hidden rounded-[20px] bg-[#f2f1f0] text-left transition-transform active:scale-[0.985]"
-    >
-      <div className="flex h-[152px] flex-col gap-3 px-4 pt-4 text-black">
-        <h3 className="text-[18px] font-extrabold leading-[22px] tracking-[0] whitespace-pre-line">{t(tile.title)}</h3>
-        <p className="text-[15px] font-medium leading-5 text-black whitespace-pre-line">{tile.description ? t(tile.description) : ''}</p>
-      </div>
-      <div className="relative h-[174px] w-full">
-        <TileImage image={tile.image} />
-      </div>
-    </button>
-  )
-}
-
-function ContentTile({ tile, onOpen }: { tile: Tile; onOpen: (id: string) => void }) {
-  return (
-    <button
-      type="button"
-      onClick={() => onOpen(tile.id)}
-      className="flex h-40 w-full flex-col justify-between rounded-[20px] bg-[#f2f1f0] px-4 pb-4 pt-4 text-left transition-transform active:scale-[0.985]"
-    >
-      <h3 className="text-[15px] font-medium leading-5 tracking-[0] text-black">{t(tile.title)}</h3>
-      <span className="text-[13px] font-medium leading-[18px] text-[#757575]">{tile.tag ? t(tile.tag) : ''}</span>
-    </button>
-  )
-}
-
-function TileCard({
-  tile,
-  onOpenProduct,
-  onOpenContent,
-}: {
-  tile: Tile
-  onOpenProduct: (id: ProductTileId) => void
-  onOpenContent: (id: string) => void
-}) {
-  return tile.kind === 'product' ? <ProductTile tile={tile} onOpen={onOpenProduct} /> : <ContentTile tile={tile} onOpen={onOpenContent} />
-}
-
 function BenefitIconBadge({ tone, icon }: { tone: BenefitTone; icon: BenefitIcon }) {
   const toneClass: Record<BenefitTone, string> = {
     coral: 'bg-[linear-gradient(140deg,#f9b6bd_0%,#ff595d_90%)] text-[#61121d]',
@@ -597,7 +603,7 @@ function ProductOnboarding({
           onClick={onClose}
         />
         <div
-          className="absolute bottom-0 left-1/2 flex w-full max-w-[375px] max-h-[calc(100%-60px)] -translate-x-1/2 flex-col overflow-hidden rounded-tl-[28px] rounded-tr-[28px] bg-[#ececec] animate-sheet-up"
+          className="absolute bottom-0 left-1/2 flex w-full max-w-[375px] max-h-[calc(100%-60px)] -translate-x-1/2 flex-col overflow-hidden rounded-tl-[28px] rounded-tr-[28px] bg-white animate-sheet-up"
           onClick={(event) => event.stopPropagation()}
         >
           <div className="pt-2">
@@ -650,7 +656,7 @@ function ProductOnboarding({
           </div>
 
           <div className="relative shrink-0 px-4 pb-3 pt-4">
-            <div className="pointer-events-none absolute inset-x-0 -top-14 h-14 bg-[linear-gradient(180deg,rgba(236,236,236,0)_0%,#ececec_100%)]" />
+            <div className="pointer-events-none absolute inset-x-0 -top-14 h-14 bg-[linear-gradient(180deg,rgba(255,255,255,0)_0%,#ffffff_100%)]" />
             <button type="button" className="h-[52px] w-full rounded-[16px] bg-[#0d0e12] text-[15px] font-medium text-white">
               {t(onboarding.action)}
             </button>
@@ -733,15 +739,6 @@ export function FinancePage() {
   const [openedContentTile, setOpenedContentTile] = useState<string | null>(null)
   const [openedProductTile, setOpenedProductTile] = useState<ProductTileId | null>(null)
 
-  const filteredLeft = useMemo(
-    () => tilesLeft.filter((tile) => activeTab === 'all' || tile.category.includes(activeTab)),
-    [activeTab],
-  )
-  const filteredRight = useMemo(
-    () => tilesRight.filter((tile) => activeTab === 'all' || tile.category.includes(activeTab)),
-    [activeTab],
-  )
-
   return (
     <>
       <main className="min-h-screen bg-[#d9d9d9] text-black">
@@ -792,39 +789,17 @@ export function FinancePage() {
               </div>
             </section>
 
-            <div className="px-[10px] pb-[6px] pt-6">
-              <button
-                type="button"
-                onClick={() => setOpenedContentTile('promo')}
-                className="relative flex w-full overflow-hidden rounded-[20px] bg-[linear-gradient(90deg,#e2ffd6_10%,#f4eefe_90%)] text-left transition-transform active:scale-[0.99]"
-              >
-                <div className="flex w-[218px] flex-col gap-4 px-5 py-5">
-                  <div className="flex flex-col gap-1">
-                    <h2 className="text-[18px] font-extrabold leading-[22px] text-black">{t('Вклады до 17% годовых')}</h2>
-                    <p className="text-[15px] font-medium leading-5 text-black">{t('Посмотрите, что предлагают крупные банки')}</p>
-                  </div>
-                  <div className="inline-flex h-11 w-fit items-center rounded-[12px] bg-[#141414] px-4 text-[15px] font-medium text-white">
-                    {t('Давайте')}
-                  </div>
-                </div>
-                <PromoArtwork />
-              </button>
+            <div className="pt-6">
+              <ProductGallery
+                activeTab={activeTab}
+                blocks={galleryBlocksByTab[activeTab]}
+                itemsById={galleryItems}
+                onOpenProduct={(id) => {
+                  if (id in productOnboarding) setOpenedProductTile(id as ProductTileId)
+                }}
+                onOpenContent={setOpenedContentTile}
+              />
             </div>
-
-            <section className="px-[10px]">
-              <div className="flex items-start gap-[6px]">
-                <div className="flex w-[174.5px] flex-col gap-[6px]">
-                  {filteredLeft.map((tile) => (
-                    <TileCard key={tile.id} tile={tile} onOpenProduct={setOpenedProductTile} onOpenContent={setOpenedContentTile} />
-                  ))}
-                </div>
-                <div className="flex w-[174.5px] flex-col gap-[6px]">
-                  {filteredRight.map((tile) => (
-                    <TileCard key={tile.id} tile={tile} onOpenProduct={setOpenedProductTile} onOpenContent={setOpenedContentTile} />
-                  ))}
-                </div>
-              </div>
-            </section>
 
             <section className="flex flex-col items-center gap-5 px-[10px] pt-[60px]">
               <p className="w-[343px] text-center text-[18px] font-extrabold leading-[22px] text-black">{t('Здесь нет того, что я хочу')} 👀</p>

@@ -1,4 +1,5 @@
 import depositsBannerSvg from '@/assets/banners/Offer-Content/deposits-banner.svg'
+import osagoBannerPng from '@/assets/banners/Offer-Content/osago-banner.png'
 import walletOnboardingSvg from '@/assets/onboarding/Wallet.svg'
 import bonusTileSvg from '@/assets/tiles/ProductItem/bonus-tile.svg'
 import depositsTileSvg from '@/assets/tiles/ProductItem/deposits-tile.svg'
@@ -8,6 +9,7 @@ import accountTileSvg from '@/assets/tiles/ProductItem/account-tile.svg'
 export const illustrationAssets = {
   banners: {
     deposits: depositsBannerSvg,
+    osago: osagoBannerPng,
   },
   onboarding: {
     wallet: walletOnboardingSvg,

@@ -1,28 +1,84 @@
-# React + TailwindCSS + shadcn/ui
+# Financial Marketplace (mobile UI)
 
-Проект подготовлен на базе Vite (React + TypeScript) c подключенными:
+Проект на `Vite + React + TypeScript + Tailwind`.
 
-- TailwindCSS
-- конфигом `components.json` для shadcn/ui
-- базовыми компонентами `Button` и `Card` из shadcn-подхода
-
-## Запуск
+## Быстрый старт
 
 ```bash
 npm install
 npm run dev
 ```
 
-## Deploy
+## Текущее устройство витрины
 
-После пуша в `main` сайт автоматически деплоится на GitHub Pages через workflow:
+Витрина карточек сделана как переиспользуемый конструктор `ProductGallery`:
 
-- `.github/workflows/deploy-pages.yml`
+- `ProductGallery` состоит из последовательности layout-блоков.
+- Каждый блок имеет схему (`layout`) и список `itemIds`.
+- Карточки берутся из конфигурации данных, а не хардкодятся в разметке.
+- `ProductItem` и `ContentItem` разделены и имеют разное поведение по клику.
 
-## Добавление компонентов shadcn/ui
+Основные файлы:
 
-После установки зависимостей можно использовать CLI shadcn:
+- `src/components/gallery/ProductGallery.tsx`
+- `src/components/gallery/ProductItem.tsx`
+- `src/components/gallery/ContentItem.tsx`
+- `src/components/gallery/layoutEngine.ts`
+- `src/components/gallery/types.ts`
+- `src/pages/FinancePage.tsx`
 
-```bash
-npx shadcn@latest add button
+## Как задавать задачу на сетку (памятка)
+
+Чтобы быстро собрать любую вкладку, пиши задачу в таком формате:
+
+1. Вкладка:
+`save | borrow | protect | economy | all`
+2. Последовательность layout-блоков:
+`L`, `S+S`, `M+S+S`, `S+S+M`, `M+S+S+M`, `S+M+M+S`, `M+S+S+S`, `S+S+S+M`, `S+M+M|M+S+M`
+3. Наполнение каждого блока:
+- какая карточка `ProductItem`/`ContentItem`
+- размер карточки (S/M/L, если применимо)
+- тексты (заголовок, подзаголовок, тег, CTA)
+- иллюстрация (если нужна)
+- целевое поведение по клику (онбординг-шторка или контентная шторка)
+
+Готовый шаблон сообщения:
+
+```text
+Вкладка: protect
+Блоки:
+1) L -> promo-osago
+2) S+S+M -> osago-payout, mortgage-life, account
+
+Карточки:
+- promo-osago (ProductItem L): заголовок "...", описание "...", кнопка "..."
+- osago-payout (ContentItem S): заголовок "...", тег "#..."
+- mortgage-life (ContentItem S): заголовок "...", тег "#..."
+- account (ProductItem M): использовать текущую карточку
+
+По клику:
+- ContentItem -> контентная шторка (ссылка на макет/точный текст)
+- ProductItem -> онбординг-шторка (ссылка на макет/точный текст)
+```
+
+## Важные правила проекта
+
+- Мобильный фрейм: `375x812`.
+- Шторки открываются снизу, с затемнением, закрываются по тапу вне шторки.
+- Для онбординг-шторки кнопка закреплена снизу, контент скроллится.
+- Если текст шторки уже утверждён, не менять формулировки без явного запроса.
+- Иллюстрации подключаются через `src/assets/illustrations.ts`.
+- SVG для онбордингов: `src/assets/onboarding/`.
+- Баннеры: `src/assets/banners/Offer-Content/`.
+
+## Правила коммитов и описаний версий
+
+- Сообщения коммитов и описание версии делаем на русском языке.
+- Формулировки должны быть понятными «спустя время»: что именно изменено и зачем.
+- Избегаем расплывчатых сообщений в стиле «fix»/«update».
+
+Пример хорошего коммита:
+
+```text
+Собрать витрину вкладки «Застраховать» через ProductGallery и обновить баннер ОСАГО
 ```
